@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrator Login | University Link</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #FFF0F7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .login-box {
+            background: white;
+            width: 90%;
+            max-width: 420px;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #F20D78;
+            text-align: center;
+        }
+
+        p {
+            text-align: center;
+            color: #666;
+        }
+
+        label {
+            display: block;
+            margin-top: 18px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 7px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 13px;
+            background: #F20D78;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #CF0863;
+        }
+
+        #message {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-box">
+        <h2>University Link</h2>
+        <p>School Administrator Login</p>
+
+        <form id="adminLoginForm">
+
+            <label for="email">Email Address</label>
+            <input type="email" id="email" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" required>
+
+            <button type="submit" id="loginButton">
+                Sign In
+            </button>
+
+            <div id="message" role="status"></div>
+        </form>
+    </div>
+
+    <script>
+        const SUPABASE_URL = "https://vlvkopactlthoiwxtdda.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_8AqzQZic-XgYwWolRJL8yg_GCfNCMMC";
+
+        
+        console.log("Supabase library:", window.supabase);
+
+if (!window.supabase) {
+    alert("Supabase library failed to load. Check your internet connection.");
+}
+const schoolSupabase = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
+
+        const form = document.getElementById("adminLoginForm");
+        const message = document.getElementById("message");
+        const loginButton = document.getElementById("loginButton");
+
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            loginButton.disabled = true;
+            message.textContent = "Signing in...";
+
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+
+            try {
+                const { data, error } =
+                    await schoolSupabase.auth.signInWithPassword({
+                        email,
+                        password
+                    });
+
+                if (error) throw error;
+
+                const { data: profile, error: profileError } =
+                    await schoolSupabase
+                        .from("profiles")
+                        .select("full_name, role")
+                        .eq("id", data.user.id)
+                        .single();
+
+                if (profileError || !profile || profile.role !== "admin") {
+                    await schoolSupabase.auth.signOut();
+                    throw new Error("This account is not authorised as an administrator.");
+                }
+                message.textContent = "Login successful! Redirecting...";
+message.style.color = "green";
+
+window.location.href = "admin-dashboard.html";
+
+           
+
+            } catch (error) {
+                message.textContent = error.message;
+                message.style.color = "red";
+            } finally {
+                loginButton.disabled = false;
+            }
+        });
+    </script>
+
+</body>
+</html>

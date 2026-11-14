@@ -1,0 +1,876 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | University Link</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #FFF0F7;
+            color: #171717;
+        }
+
+        .sidebar {
+            position: fixed;
+            width: 245px;
+            height: 100vh;
+            background: #171717;
+            color: white;
+            padding: 25px 15px;
+            overflow-y: auto;
+        }
+
+        .brand {
+            color: #F20D78;
+            font-size: 21px;
+            font-weight: bold;
+            margin-bottom: 35px;
+            padding-left: 10px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 13px 12px;
+            margin: 5px 0;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #F20D78;
+        }
+
+        .main {
+            margin-left: 245px;
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        h1 { margin: 0; font-size: 26px; }
+
+        .welcome { color: #666; margin-top: 8px; }
+
+        .logout {
+            background: #F20D78;
+            color: white;
+            border: none;
+            padding: 11px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+        }
+
+        .card h3 {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .number {
+            font-size: 30px;
+            font-weight: bold;
+            color: #F20D78;
+        }
+
+        .section {
+            background: white;
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        .section h2 { margin-top: 0; }
+
+        .section p { color: #666; }
+
+        .status {
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .error { color: #c62828; }
+
+        @media (max-width: 750px) {
+            .sidebar {
+                position: static;
+                width: 100%;
+                height: auto;
+            }
+
+            .main { margin-left: 0; padding: 18px; }
+
+            .sidebar a { display: inline-block; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">UL PRIMARY SCHOOL</div>
+
+        <a class="active" href="#overview">Dashboard</a>
+        <a href="#pupils">Pupil Management</a>
+        <a href="#teachers">Teacher Management</a>
+        <a href="#classes">Classes</a>
+        <a href="#attendance">Attendance</a>
+        <a href="#examinations">Examinations</a>
+        <a href="#fees">Fees Management</a>
+        <a href="#reports">Reports</a>
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <h1>Administrator Dashboard</h1>
+                <p class="welcome" id="welcomeMessage">
+                    Checking your account...
+                </p>
+            </div>
+
+            <button class="logout" id="logoutButton">
+                Logout
+            </button>
+        </header>
+
+        <section id="overview">
+            <div class="stats">
+
+                <div class="card">
+                    <h3>Total Pupils</h3>
+                    <div class="number" id="pupilCount">—</div>
+                </div>
+
+                <div class="card">
+                    <h3>Teachers</h3>
+                    <div class="number" id="teacherCount">—</div>
+                </div>
+
+                <div class="card">
+                    <h3>Classes</h3>
+                    <div class="number" id="classCount">—</div>
+                </div>
+
+                <div class="card">
+                    <h3>Parents</h3>
+                    <div class="number" id="parentCount">—</div>
+                </div>
+
+            </div>
+        </section>
+
+        
+            
+<section class="section" id="pupils">
+    <h2>Pupil Management</h2>
+    <p>Register and manage school pupil records.</p>
+
+    <form id="pupilForm">
+
+        <label>Admission Number</label>
+        <input type="text" id="admissionNumber"
+               placeholder="e.g. ULPS/2026/001" required>
+
+        <label>First Name</label>
+        <input type="text" id="firstName" required>
+
+        <label>Last Name</label>
+        <input type="text" id="lastName" required>
+
+        <label>Class</label>
+        <select id="classId" required>
+            <option value="">Loading classes...</option>
+        </select>
+
+        <label>Date of Admission</label>
+        <input type="date" id="admissionDate" required>
+
+        <button type="submit" class="logout" id="registerButton">
+            Register Pupil
+        </button>
+
+        <p id="pupilMessage"></p>
+    </form>
+
+    <hr style="margin:25px 0;">
+
+    <h3>Registered Pupils</h3>
+
+    <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse;">
+            <thead>
+                <tr>
+                    <th>Admission No.</th>
+                    <th>Name</th>
+                    <th>Class</th>
+                    <th>Date Admitted</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="pupilTableBody">
+                <tr>
+                    <td colspan="5">Loading pupils...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div> <div id="editPupilBox" style="display:none; margin-top:25px;">
+
+    <h3>Edit Pupil Details</h3>
+
+    <form id="editPupilForm">
+
+        <input type="hidden" id="editPupilId">
+
+        <label>Admission Number</label>
+        <input type="text" id="editAdmissionNumber" required>
+
+        <label>First Name</label>
+        <input type="text" id="editFirstName" required>
+
+        <label>Last Name</label>
+        <input type="text" id="editLastName" required>
+
+        <label>Class</label>
+        <select id="editPupilClass" required>
+            <option value="">Select Class</option>
+        </select>
+
+        <label>Date of Admission</label>
+        <input type="date" id="editAdmissionDate" required>
+
+        <button type="submit" class="logout">
+            Save Changes
+        </button>
+
+        <button type="button" id="cancelPupilEdit">
+            Cancel
+        </button>
+
+        <p id="editPupilMessage"></p>
+
+    </form>
+</div>
+</section>
+
+
+        <section class="section" id="teachers">
+            <h2>Teacher Management</h2>
+            <p>Manage teacher accounts and assignments.</p>
+            <p>Module coming next.</p>
+        </section>
+
+       <section class="section" id="classes">
+
+    <h2>Class Management</h2>
+    <p>Create and manage school classes and streams.</p>
+
+    <form id="classForm">
+
+        <label>Class Name</label>
+        <input
+            type="text"
+            id="className"
+            placeholder="e.g. Grade 1"
+            required
+        >
+
+        <label>Stream</label>
+        <input
+            type="text"
+            id="classStream"
+            placeholder="e.g. East"
+            required
+        >
+
+        <label>Academic Year</label>
+        <input
+            type="number"
+            id="academicYear"
+            value="2026"
+            required
+        >
+
+        <button type="submit" class="logout" id="classButton">
+            Add Class
+        </button>
+
+        <p id="classMessage"></p>
+
+    </form>
+
+    <hr style="margin:25px 0;">
+
+    <h3>Available Classes</h3>
+
+    <div style="overflow-x:auto;">
+
+        <table style="width:100%; border-collapse:collapse;">
+
+            <thead>
+                <tr>
+                    <th>Class</th>
+                    <th>Stream</th>
+                    <th>Academic Year</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody id="classTableBody">
+                <tr>
+                    <td colspan="4">Loading classes...</td>
+                </tr>
+            </tbody>
+
+        </table>
+        <div id="editClassBox" style="display:none; margin-top:25px;">
+
+    <h3>Edit Class</h3>
+
+    <form id="editClassForm">
+
+        <input type="hidden" id="editClassId">
+
+        <label>Class Name</label>
+        <input type="text" id="editClassName" required>
+
+        <label>Stream</label>
+        <input type="text" id="editClassStream">
+
+        <label>Academic Year</label>
+        <input type="number" id="editAcademicYear" required>
+
+        <button type="submit" class="logout">
+            Save Changes
+        </button>
+
+        <button type="button" id="cancelClassEdit">
+            Cancel
+        </button>
+
+        <p id="editClassMessage"></p>
+
+    </form>
+</div>
+
+</section>>
+
+        <section class="section" id="attendance">
+            <h2>Attendance</h2>
+            <p>Record and monitor pupil attendance.</p>
+            <p>Module coming next.</p>
+        </section>
+
+        <section class="section" id="examinations">
+            <h2>Examinations</h2>
+            <p>Manage examinations, marks and pupil results.</p>
+            <p>Module coming next.</p>
+        </section>
+
+        <section class="section" id="fees">
+            <h2>Fees Management</h2>
+            <p>Manage school fee records and payments.</p>
+            <p>Module coming next.</p>
+        </section>
+
+        <section class="section" id="reports">
+            <h2>School Reports</h2>
+            <p>Generate school management reports.</p>
+            <p>Module coming next.</p>
+        </section>
+
+        <p class="status" id="statusMessage">
+            Connecting to school database...
+        </p>
+
+    </main>
+
+    <script>
+        const SUPABASE_URL = "https://vlvkopactlthoiwxtdda.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_8AqzQZic-XgYwWolRJL8yg_GCfNCMMC";
+
+        const schoolSupabase = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
+
+        async function loadDashboard() {
+            const status = document.getElementById("statusMessage");
+
+            try {
+                const { data: sessionData, error: sessionError } =
+                    await schoolSupabase.auth.getSession();
+
+                if (sessionError) throw sessionError;
+
+                const user = sessionData.session?.user;
+
+                if (!user) {
+                    window.location.replace("admin-login.html");
+                    return;
+                }
+
+                const { data: profile, error: profileError } =
+                    await schoolSupabase
+                        .from("profiles")
+                        .select("full_name, role")
+                        .eq("id", user.id)
+                        .single();
+
+                if (profileError) throw profileError;
+
+                if (profile.role !== "admin") {
+                    await schoolSupabase.auth.signOut();
+                    window.location.replace("admin-login.html");
+                    return;
+                }
+
+                document.getElementById("welcomeMessage").textContent =
+                    "Welcome, " + profile.full_name;
+
+                // Load dashboard statistics
+                const tables = [
+                    ["pupils", "pupilCount"],
+                    ["classes", "classCount"]
+                ];
+
+                for (const [table, elementId] of tables) {
+                    const { count, error } = await schoolSupabase
+                        .from(table)
+                        .select("*", { count: "exact", head: true });
+
+                    if (error) throw error;
+
+                    document.getElementById(elementId).textContent = count;
+                }
+
+                // Count teachers and parents from profiles
+                for (const role of ["teacher", "parent"]) {
+                    const { count, error } = await schoolSupabase
+                        .from("profiles")
+                        .select("*", { count: "exact", head: true })
+                        .eq("role", role);
+
+                    if (error) throw error;
+
+                    const elementId =
+                        role === "teacher" ? "teacherCount" : "parentCount";
+
+                    document.getElementById(elementId).textContent = count;
+                }
+
+                status.textContent = "Dashboard connected successfully.";
+
+            } catch (error) {
+                console.error(error);
+                status.textContent =
+                    "Dashboard error: " + error.message;
+                status.classList.add("error");
+            }
+        }
+
+        document.getElementById("logoutButton")
+            .addEventListener("click", async () => {
+
+                const { error } = await schoolSupabase.auth.signOut();
+
+                if (error) {
+                    alert("Logout failed: " + error.message);
+                    return;
+                }
+
+                window.location.replace("admin-login.html");
+            });
+
+        
+// LOAD AVAILABLE CLASSES
+async function loadClasses() {
+    const classSelect = document.getElementById("classId");
+
+    const { data, error } = await schoolSupabase
+        .from("classes")
+        .select("id, class_name, stream")
+        .order("class_name");
+
+    if (error) {
+        classSelect.innerHTML =
+            '<option value="">Unable to load classes</option>';
+        console.error(error);
+        return;
+    }
+
+    classSelect.innerHTML =
+        '<option value="">Select a class</option>';
+
+    data.forEach(schoolClass => {
+        const option = document.createElement("option");
+
+        option.value = schoolClass.id;
+        option.textContent =
+            schoolClass.class_name +
+            (schoolClass.stream ? " - " + schoolClass.stream : "");
+
+        classSelect.appendChild(option);
+    });
+}
+
+
+// REGISTER A PUPIL
+document.getElementById("pupilForm")
+    .addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        const message = document.getElementById("pupilMessage");
+        const button = document.getElementById("registerButton");
+
+        button.disabled = true;
+        message.textContent = "Registering pupil...";
+
+        const pupil = {
+            admission_number:
+                document.getElementById("admissionNumber").value.trim(),
+
+            first_name:
+                document.getElementById("firstName").value.trim(),
+
+            last_name:
+                document.getElementById("lastName").value.trim(),
+
+            class_id:
+                document.getElementById("classId").value,
+
+            date_of_admission:
+                document.getElementById("admissionDate").value
+        };
+
+        try {
+            const { error } = await schoolSupabase
+                .from("pupils")
+                .insert([pupil]);
+
+            if (error) throw error;
+
+            message.textContent = "Pupil registered successfully!";
+            message.style.color = "green";
+
+            this.reset();
+
+            await loadPupils();
+
+            // Refresh pupil statistics
+            await loadDashboard();
+
+        } catch (error) {
+            message.textContent = error.message;
+            message.style.color = "red";
+        } finally {
+            button.disabled = false;
+        }
+    });
+
+
+// DISPLAY REGISTERED PUPILS
+async function loadPupils() {
+    const tableBody = document.getElementById("pupilTableBody");
+
+    const { data, error } = await schoolSupabase
+        .from("pupils")
+        .select(`
+    id,
+    admission_number,
+    first_name,
+    last_name,
+    class_id,
+    date_of_admission,
+    classes(class_name)
+`)
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        tableBody.innerHTML =
+            '<tr><td colspan="4">Unable to load pupils.</td></tr>';
+
+        console.error(error);
+        return;
+    }
+
+    tableBody.innerHTML = "";
+
+    if (data.length === 0) {
+        tableBody.innerHTML =
+            '<tr><td colspan="4">No pupils registered yet.</td></tr>';
+        return;
+    }
+
+    data.forEach(pupil => {
+        const row = document.createElement("tr");
+
+        const values = [
+            pupil.admission_number,
+            pupil.first_name + " " + pupil.last_name,
+            pupil.classes?.class_name || "Not assigned",
+            pupil.date_of_admission || "Not provided"
+        ];
+
+        values.forEach(value => {
+            const cell = document.createElement("td");
+            cell.style.padding = "12px";
+            cell.style.borderBottom = "1px solid #eee";
+            cell.textContent = value;
+            row.appendChild(cell);
+        });
+        // EDIT BUTTON
+const actionCell = document.createElement("td");
+
+const editButton = document.createElement("button");
+editButton.textContent = "Edit";
+editButton.type = "button";
+
+editButton.onclick = async () => {
+
+    document.getElementById("editPupilId").value = pupil.id;
+    document.getElementById("editAdmissionNumber").value = pupil.admission_number;
+    document.getElementById("editFirstName").value = pupil.first_name;
+    document.getElementById("editLastName").value = pupil.last_name;
+    document.getElementById("editAdmissionDate").value = pupil.date_of_admission || "";
+
+    const { data: classes, error } = await schoolSupabase
+        .from("classes")
+        .select("id, class_name, stream")
+        .order("class_name");
+
+    if (error) {
+        alert("Unable to load classes.");
+        return;
+    }
+
+    const classSelect = document.getElementById("editPupilClass");
+
+    classSelect.innerHTML = '<option value="">Select Class</option>';
+
+    classes.forEach(schoolClass => {
+        const option = document.createElement("option");
+        option.value = schoolClass.id;
+        option.textContent = schoolClass.class_name +
+            (schoolClass.stream ? " - " + schoolClass.stream : "");
+
+        classSelect.appendChild(option);
+    });
+
+    classSelect.value = pupil.class_id || "";
+
+    document.getElementById("editPupilBox").style.display = "block";
+};
+
+actionCell.appendChild(editButton);
+row.appendChild(actionCell);
+
+        tableBody.appendChild(row);
+    });
+}
+// ADD A NEW CLASS
+document.getElementById("classForm")
+    .addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        const message = document.getElementById("classMessage");
+        const button = document.getElementById("classButton");
+
+        button.disabled = true;
+        message.textContent = "Saving class...";
+
+        const newClass = {
+            class_name: document.getElementById("className").value.trim(),
+            stream: document.getElementById("classStream").value.trim(),
+            academic_year: Number(document.getElementById("academicYear").value)
+        };
+
+        try {
+            const { error } = await schoolSupabase
+                .from("classes")
+                .insert([newClass]);
+
+            if (error) throw error;
+
+            message.textContent = "Class added successfully!";
+            message.style.color = "green";
+
+            this.reset();
+            document.getElementById("academicYear").value = 2026;
+
+            await loadClassTable();
+            await loadClasses();
+
+            await loadDashboard();
+
+        } catch (error) {
+            message.textContent = error.message;
+            message.style.color = "red";
+        } finally {
+            button.disabled = false;
+        }
+    });
+
+
+// DISPLAY ALL CLASSES
+async function loadClassTable() {
+
+    const tableBody = document.getElementById("classTableBody");
+
+    const { data, error } = await schoolSupabase
+        .from("classes")
+        .select("id, class_name, stream, academic_year")
+        .order("class_name");
+
+    if (error) {
+        tableBody.innerHTML =
+            '<tr><td colspan="3">Unable to load classes.</td></tr>';
+
+        console.error(error);
+        return;
+    }
+
+    tableBody.innerHTML = "";
+
+    if (!data || data.length === 0) {
+        tableBody.innerHTML =
+            '<tr><td colspan="3">No classes available.</td></tr>';
+        return;
+    }
+
+    data.forEach(schoolClass => {
+
+       data.forEach(schoolClass => {
+
+    const row = document.createElement("tr");
+
+    const values = [
+        schoolClass.class_name,
+        schoolClass.stream || "Not specified",
+        schoolClass.academic_year
+    ];
+
+    values.forEach(value => {
+        const cell = document.createElement("td");
+        cell.textContent = value;
+        cell.style.padding = "12px";
+        cell.style.borderBottom = "1px solid #eee";
+        row.appendChild(cell);
+    });
+
+    const actionCell = document.createElement("td");
+
+    const editButton = document.createElement("button");
+    editButton.textContent = "Edit";
+    editButton.type = "button";
+
+    editButton.onclick = () => {
+        document.getElementById("editClassId").value = schoolClass.id;
+        document.getElementById("editClassName").value = schoolClass.class_name;
+        document.getElementById("editClassStream").value = schoolClass.stream || "";
+        document.getElementById("editAcademicYear").value = schoolClass.academic_year;
+
+        document.getElementById("editClassMessage").textContent = "";
+        document.getElementById("editClassBox").style.display = "block";
+    };
+
+    actionCell.appendChild(editButton);
+    row.appendChild(actionCell);
+
+    tableBody.appendChild(row);
+});
+
+        tableBody.appendChild(row);
+    });
+}
+// UPDATE EXISTING CLASS
+document.getElementById("editClassForm")
+    .addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        const message = document.getElementById("editClassMessage");
+
+        const id = document.getElementById("editClassId").value;
+
+        const updatedClass = {
+            class_name: document.getElementById("editClassName").value.trim(),
+            stream: document.getElementById("editClassStream").value.trim(),
+            academic_year: Number(
+                document.getElementById("editAcademicYear").value
+            )
+        };
+
+        message.textContent = "Updating class...";
+
+        const { error } = await schoolSupabase
+            .from("classes")
+            .update(updatedClass)
+            .eq("id", id);
+
+        if (error) {
+            message.textContent = error.message;
+            message.style.color = "red";
+            return;
+        }
+
+        message.textContent = "Class updated successfully!";
+        message.style.color = "green";
+
+        await loadClassTable();
+        await loadClasses();
+
+        document.getElementById("editClassBox").style.display = "none";
+    });
+
+
+// CANCEL EDITING
+document.getElementById("cancelClassEdit")
+    .addEventListener("click", function() {
+
+        document.getElementById("editClassBox").style.display = "none";
+
+    });
+
+    loadDashboard().then(() => {
+    loadClasses();
+    loadPupils();
+    loadClassTable();
+}); 
+    </script>
+
+</body>
+</html>
