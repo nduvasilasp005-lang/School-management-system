@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>University Link Primary School | Mombasa</title>
+
+    <meta name="description"
+          content="Welcome to University Link Primary School, Mombasa. Discover our academics, school activities, and online learning hub.">
+
+    <link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="main.js" defer></script>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <header class="header">
+        <a href="#home" class="brand">
+            <span class="brand-icon">UL</span>
+            <span>
+                <strong>UNIVERSITY LINK</strong>
+                <small>PRIMARY SCHOOL</small>
+            </span>
+        </a>
+
+        <button class="menu-toggle"
+                id="menuToggle"
+                aria-label="Toggle navigation"
+                aria-expanded="false"
+                aria-controls="navMenu">
+            ☰
+        </button>
+
+        <nav class="nav-menu" id="navMenu">
+            <a href="#home">Home</a>
+            <a href="#about">About Us</a>
+            <a href="#academics">Academics</a>
+            <a href="#learning">Learning Hub</a>
+            <a href="#news">School News</a>
+            <a href="#contact">Contact</a>
+            <a href="#learning" class="nav-button">Portal Login</a>
+        </nav>
+    </header>
+
+    <main>
+
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+
+            <div class="hero-content">
+                <span class="eyebrow">WELCOME TO OUR SCHOOL</span>
+
+                <h1>
+                    Building Knowledge.<br>
+                    <span>Inspiring Futures.</span>
+                </h1>
+
+                <p>
+                    Welcome to University Link Primary School.
+                    Discover a learning community where pupils
+                    develop knowledge, skills, confidence, and
+                    a passion for learning.
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="#about" class="btn btn-primary">
+                        Discover Our School
+                    </a>
+
+                    <a href="#learning" class="btn btn-outline">
+                        Explore Learning Hub
+                    </a>
+                </div>
+
+                <div class="hero-note">
+                    <span class="note-dot"></span>
+                    Learning today, leading tomorrow.
+                </div>
+            </div>
+
+            <div class="hero-image">
+                <img
+                    src="Assets\Images\school.jpg"
+                    alt="Pupils of University Link Primary School in their school uniforms"
+                >
+
+                <div class="image-caption">
+                    <span class="caption-icon">★</span>
+                    <div>
+                        <strong>A Community of Learners</strong>
+                        <small>Growing together through education</small>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Quick Links -->
+        <section class="quick-links" aria-label="Quick links">
+
+            <a href="#academics" class="quick-card">
+                <span class="quick-icon">📚</span>
+                <span>
+                    <strong>Academics</strong>
+                    <small>Explore our learning</small>
+                </span>
+                <span class="arrow">→</span>
+            </a>
+
+            <a href="#learning" class="quick-card">
+                <span class="quick-icon">✏️</span>
+                <span>
+                    <strong>Homework</strong>
+                    <small>Learning and practice</small>
+                </span>
+                <span class="arrow">→</span>
+            </a>
+
+            <a href="#news" class="quick-card">
+                <span class="quick-icon">📢</span>
+                <span>
+                    <strong>School Notices</strong>
+                    <small>Stay informed</small>
+                </span>
+                <span class="arrow">→</span>
+            </a>
+
+            <a href="#learning" class="quick-card">
+                <span class="quick-icon">👨‍👩‍👧</span>
+                <span>
+                    <strong>Parent Portal</strong>
+                    <small>Follow your child's learning</small>
+                </span>
+                <span class="arrow">→</span>
+            </a>
+
+        </section>
+
+        <!-- About Us -->
+        <section class="section about-section" id="about">
+
+            <div class="section-image">
+                <img
+                    src="Assets\Images\school.jpg"
+                    alt="Pupils standing together at school"
+                    loading="lazy"
+                >
+            </div>
+
+            <div class="section-content">
+                <span class="eyebrow">GET TO KNOW US</span>
+
+                <h2>A Place to Learn, Grow and Succeed</h2>
+
+                <p>
+                    University Link Primary School is committed
+                    to providing a welcoming environment where
+                    pupils can learn, explore their abilities,
+                    and prepare for the future.
+                </p>
+
+                <p>
+                    Through classroom learning, educational
+                    activities, and collaboration with parents,
+                    we aim to support each pupil's educational
+                    journey.
+                </p>
+
+                <a href="#academics" class="text-link">
+                    Discover our learning approach →
+                </a>
+            </div>
+
+        </section>
+
+        <!-- Academics -->
+        <section class="section academics-section" id="academics">
+
+            <div class="section-heading">
+                <span class="eyebrow">OUR LEARNING COMMUNITY</span>
+                <h2>Learning for Every Pupil</h2>
+                <p>
+                    Explore learning opportunities and resources
+                    designed to support pupils throughout their
+                    educational journey.
+                </p>
+            </div>
+
+            <div class="academic-grid">
+
+                <article class="academic-card">
+                    <div class="academic-icon">📖</div>
+                    <h3>Language and Literacy</h3>
+                    <p>
+                        Reading, writing, communication, and
+                        language development.
+                    </p>
+                </article>
+
+                <article class="academic-card">
+                    <div class="academic-icon">🔢</div>
+                    <h3>Mathematics</h3>
+                    <p>
+                        Building problem-solving skills,
+                        numerical understanding, and confidence.
+                    </p>
+                </article>
+
+                <article class="academic-card">
+                    <div class="academic-icon">🔬</div>
+                    <h3>Science and Discovery</h3>
+                    <p>
+                        Exploring the world through observation,
+                        investigation, and practical learning.
+                    </p>
+                </article>
+
+                <article class="academic-card">
+                    <div class="academic-icon">🌱</div>
+                    <h3>Personal Development</h3>
+                    <p>
+                        Encouraging creativity, responsibility,
+                        cooperation, and positive values.
+                    </p>
+                </article>
+
+            </div>
+
+        </section>
+
+        <!-- Learning Hub -->
+        <section class="learning-section" id="learning">
+
+            <div class="learning-content">
+                <span class="eyebrow">LEARNING BEYOND THE CLASSROOM</span>
+
+                <h2>Welcome to Our Learning Hub</h2>
+
+                <p>
+                    A central place for pupils, parents, and
+                    teachers to access learning materials,
+                    homework, school notices, and progress updates.
+                </p>
+
+                <div class="learning-features">
+                    <div>
+                        <span>✓</span>
+                        Homework and assignments
+                    </div>
+
+                    <div>
+                        <span>✓</span>
+                        Reading materials and revision
+                    </div>
+
+                    <div>
+                        <span>✓</span>
+                        School announcements
+                    </div>
+
+                    <div>
+                        <span>✓</span>
+                        Pupil progress and report cards
+                    </div>
+                </div>
+
+                <a href="pages/login.html" class="btn btn-light">
+                    Access Learning Portal →
+                </a>
+
+                <small class="portal-note">
+                    Portal access will be available after the
+                    login system has been implemented.
+                </small>
+            </div>
+
+            <div class="learning-illustration" aria-hidden="true">
+                <div class="book book-one">📚</div>
+                <div class="book book-two">✏️</div>
+                <div class="book book-three">🎓</div>
+                <div class="learning-circle"></div>
+            </div>
+
+        </section>
+
+        <!-- School News -->
+        <section class="section news-section" id="news">
+
+            <div class="section-heading">
+                <span class="eyebrow">STAY CONNECTED</span>
+                <h2>School News and Notices</h2>
+                <p>
+                    Important updates and announcements for
+                    parents, pupils, and the school community.
+                </p>
+            </div>
+
+            <div class="news-placeholder">
+                <span>📢</span>
+                <h3>Stay Tuned for School Updates</h3>
+                <p>
+                    School announcements and upcoming events
+                    will appear here when published by the school.
+                </p>
+            </div>
+
+        </section>
+
+        <!-- Contact -->
+        <section class="contact-section" id="contact">
+
+            <div>
+                <span class="eyebrow">WE WOULD LOVE TO HEAR FROM YOU</span>
+                <h2>Connect With Our School</h2>
+                <p>
+                    Contact the school for enquiries about
+                    admissions, learning, and other school services.
+                </p>
+            </div>
+
+            <a href="mailto:" class="btn btn-light"
+               id="contactButton">
+                Contact the School →
+            </a>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+
+        <a href="#home" class="brand footer-brand">
+            <span class="brand-icon">UL</span>
+            <span>
+                <strong>UNIVERSITY LINK</strong>
+                <small>PRIMARY SCHOOL</small>
+            </span>
+        </a>
+
+        <p>
+            Building Knowledge. Inspiring Futures.
+        </p>
+
+        <div class="footer-links">
+            <a href="#about">About</a>
+            <a href="#academics">Academics</a>
+            <a href="#learning">Learning Hub</a>
+            <a href="#contact">Contact</a>
+        </div>
+
+        <p class="copyright">
+            &copy; <span id="year"></span>
+            University Link Primary School.
+            All rights reserved.
+        </p>
+
+    </footer>
+
+</body>
+</html>
